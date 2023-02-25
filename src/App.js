@@ -1,40 +1,49 @@
 import React from "react";
-import Noticia from "./components/noticia/noticia";
+import Card from "./components/pokemon/card";
 
+var pokemonNumber = 1;
 function App() {
-  const [noticias, setNoticias] = React.useState([]);
+  const [pokemon, setPokemon] = React.useState({});
+  function Carregar() {
+    console.log(pokemonNumber)
+    fetch("https://pokeapi.co/api/v2/pokemon/" + pokemonNumber)
+      .then(response => response.json())
+      .then(data => {
+        setPokemon(data)
+      });
+  }
 
-  function carregar() {
-    setNoticias([{
-      imagem: "https://picsum.photos/200/200?grayscale",
-      titulo: "Texto 1",
-      texto: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur molestie pellentesque erat. Sed gravida rutrum eros sed posuere. Sed ullamcorper congue pretium. Etiam ut porta leo, nec maximus ex. Nunc hendrerit enim fermentum, pharetra massa id, posuere turpis. Aenean lacus nisl, finibus pulvinar ipsum vel, faucibus consectetur ante. Nulla dapibus, est ac ornare consectetur, massa tortor egestas odio, nec facilisis velit mi quis risus."
-    },
-    {
-      imagem: "https://picsum.photos/200/200",
-      titulo: "Texto 2",
-      texto: "Integer porta augue ipsum, ut convallis tellus mollis nec. Donec varius tortor a nunc consectetur, vitae euismod risus scelerisque. Duis eu ullamcorper mauris, a porta erat. Fusce enim sem, ornare nec pellentesque nec, laoreet sed orci. Maecenas eget nisi mollis, congue ante ut, mattis velit. Vestibulum ullamcorper metus volutpat, volutpat odio ac, malesuada diam. Quisque vitae mi ultricies, vehicula lectus sed, imperdiet purus. Praesent at tincidunt urna, pretium imperdiet massa. Aenean fermentum, mauris vitae aliquet egestas, lectus lectus suscipit elit, in tempus ipsum leo consequat mi. Integer quis pharetra massa, a iaculis tortor."
-    }])
+  function Proximo() {
+    pokemonNumber++
+    Carregar()
+  }
+  function Anterior() {
+    if(pokemonNumber > 1){
+      pokemonNumber--
+    }
+    Carregar()
   }
 
   return (
-    noticias.length >= 2 ?
-      <div className="container">
-        <Noticia
-          titulo={noticias[0].titulo}
-          texto={noticias[0].texto}
-          img={noticias[0].imagem}
-        />
-        <Noticia
-          titulo={noticias[1].titulo}
-          texto={noticias[1].texto}
-          img={noticias[1].imagem}
-        />
+    pokemon.sprites ?
+      <div className="container" style={{height: "100vh"}}>
+        <div className="h-100 w-100 d-flex flex-column justify-content-center align-items-center">
+         <Card
+         pokemon = {pokemon}
+         />
+          <div className="row mt-3">
+            <div className="col-6">
+              <button type="button" className="btn btn-secondary" onClick={Anterior}>Anterior</button>
+            </div>
+            <div className="col-6">
+              <button type="button" className="btn btn-primary" onClick={Proximo}>Próximo</button>
+            </div>
+          </div>
+        </div>
       </div>
       :
       <div className="container">
-        <button onClick={carregar}>Carregar noticias</button>
-        <div>Sem noticias</div>
+        <button onClick={Carregar}>Carregar</button>
       </div>
   );
 }
